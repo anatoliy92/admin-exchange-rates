@@ -1,20 +1,20 @@
-# admin-link
+# admin-exchange-rates
 
 ### Информация
 
-Модуль - ссылка, заточенный для CMS IRsite.
+Модуль - курсов валют, заточенный для CMS IRsite.
 
 ### Установка
 
 ```
-$ composer require avl/admin-link
+$ composer require avl/admin-exchange-rates
 ```
-Или в секцию **require** добавить строчку **"avl/admin-link": "^1.0"**
+Или в секцию **require** добавить строчку **"avl/admin-exchange-rates": "^1.0"**
 
 ```json
 {
     "require": {
-        "avl/admin-link": "^1.0"
+        "avl/admin-exchange-rates": "^1.0"
     }
 }
 ```
