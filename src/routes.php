@@ -18,7 +18,8 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => [ 'l
 	Route::group(['namespace' => 'Avl\ExchangeRates\Controllers\Site'], function () {
 		Route::get('exchangerates/{alias}', 'ExchangeRatesController@index')->name('site.exchangerates.index');
 		Route::post('exchangerates/{alias}/graph', 'ExchangeRatesController@graph')->name('site.exchangerates.graph');
-		Route::post('exchangerates/{alias}/report', 'ExchangeRatesController@report')->name('site.exchangerates.report');
+		Route::post('exchangerates/{alias}/report', 'ReportRatesController@report')->name('site.exchangerates.report');
+		Route::get('exchangerates/{alias}/report-pdf', 'ReportRatesController@pdf')->name('site.exchangerates.pdf');
 		Route::post('exchangerates/{alias}/excel', 'ExcelRatesController@excel')->name('site.exchangerates.excel');
 	});
 

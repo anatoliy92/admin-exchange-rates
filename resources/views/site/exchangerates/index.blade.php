@@ -11,6 +11,13 @@
 			$(".change--form-action").hover(function () {
 				$(".form--action").attr('action', $(this).val());
 			});
+			// Ставлю пока временно ограничение на выделение курсов за раз
+			$('.checkbox--course').on('click', function () {
+	      if ($('.checkbox--course:checked').length > 3) {
+	        return false;
+	      }
+	      return true;
+	    });
 		});
 	</script>
 @endsection
@@ -40,7 +47,7 @@
 										@if ($code)
 											<tr>
 												<td style="width: 30px;">
-													{{ Form::checkbox('rates[]', $code) }}
+													{{ Form::checkbox('rates[]', $code, false, ['class' => 'checkbox--course']) }}
 												</td>
 												<td>{{ $record['unit'] }} {{ $record['title_' . LaravelLocalization::getCurrentLocale()] }}</td>
 												<td>{{ $code . ' / KZT' }}</td>
