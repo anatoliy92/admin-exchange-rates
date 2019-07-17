@@ -14,9 +14,9 @@
 			<tr>
 				<td style="width: 100px;">{{ $rate->relevant }}</td>
 				@foreach (request()->input('rates') as $code)
-					<td class="text-center">{{ $rate->rates[$code]['unit'] }}</td>
-					<td class="text-center">{{ $rate->rates[$code]['amount'] }}</td>
-					<td></td>
+					@isset($rate->rates[$code]) <td class="text-center">{{ $rate->rates[$code]['unit'] }}</td> @else <td></td> @endisset
+					@isset($rate->rates[$code]) <td class="text-center">{{ $rate->rates[$code]['amount'] }}</td> @else <td></td> @endisset
+					@isset($rate->rates[$code]) <td></td> @else <td></td> @endisset
 				@endforeach
 			</tr>
 		@endforeach

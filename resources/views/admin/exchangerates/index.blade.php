@@ -71,6 +71,9 @@
 							</tbody>
 						</table>
 
+						<div class="d-flex justify-content-end">
+							{{ $rates->appends($_GET)->links('vendor.pagination.bootstrap-4') }}
+						</div>
 					</div>
 				@endif
 

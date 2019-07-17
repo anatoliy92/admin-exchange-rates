@@ -15,11 +15,15 @@ class ReportRatesController extends SectionsController
 
 	public function report (Request $request)
 	{
-		$rates = ExchangeRates::good()->whereBetween('relevant', [$request->input('beginDate'), $request->input('endDate')])->get();
+		if ($request->input('rates')) {
+			$rates = ExchangeRates::good()->whereBetween('relevant', [$request->input('beginDate'), $request->input('endDate')])->get();
 
-		return view('exchangerates::site.exchangerates.report', [
-			'rates' => $rates
-		]);
+			return view('exchangerates::site.exchangerates.report', [
+				'rates' => $rates
+			]);
+		}
+
+		return redirect()->back();
 	}
 
 	public function pdf (Request $request)

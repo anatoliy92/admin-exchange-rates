@@ -63,8 +63,8 @@ class ExcelRatesController extends SectionsController
 			$letter = 'B';
 			foreach ($request->input('rates') as $code) {
 
-				$spreadsheet->setCellValue($letter . $i, $rate->rates[$code]['unit']);
-				$spreadsheet->setCellValue(++$letter. $i, $rate->rates[$code]['amount']);
+				$spreadsheet->setCellValue($letter . $i, $rate->rates[$code]['unit'] ?? '');
+				$spreadsheet->setCellValue(++$letter. $i, $rate->rates[$code]['amount'] ?? '');
 
 				$letter++;
 			}

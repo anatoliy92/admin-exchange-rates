@@ -39,7 +39,7 @@ class ExchangeRatesController extends AvlController
 
 				return view('exchangerates::admin.exchangerates.index', [
 					'section' => $this->section,
-					'rates' => ExchangeRates::latest()->paginate(30)
+					'rates' => ExchangeRates::orderBy('relevant', 'DESC')->paginate(30)
 				]);
 		}
 
