@@ -10,13 +10,11 @@ class ExchangeRates extends Model
 
 		protected $table = 'exchange-rates';
 
+		protected $guarded = [];
+
 		protected $modelName = __CLASS__;
 
 		protected $lang = null;
-
-		protected $casts = [
-			'rates' => 'array',
-		];
 
 		public function __construct ()
 		{
@@ -28,9 +26,19 @@ class ExchangeRates extends Model
 			return $this->belongsTo('App\Models\Sections', 'section_id', 'id');
 		}
 
-		public function scopeGood ($query)
-	  {
-	    return $query->whereGood(true);
-	  }
+		public function rates ()
+		{
+			return $this->hasMany(ExchangeRatesData::class, 'rate_id', 'id');
+		}
 
+		public function scopeGood ($query)
+		{
+			return $query->whereGood(true);
+		}
+
+		public function getTitleAttribute ($value, $lang = null) {
+			$title = (!is_null($lang)) ? $lang : $this->lang;
+
+			return ($this->{'title_' . $title}) ? $this->{'title_' . $title} : $this->title_ru ;
+		}
 }

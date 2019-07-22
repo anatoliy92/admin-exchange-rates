@@ -23,7 +23,6 @@
 @endsection
 
 @section('content')
-
 	<div class="container mb-5">
 
 		<div class="py-5 text-center">
@@ -36,35 +35,29 @@
 				{{ Form::open(['url' => route('site.exchangerates.graph', ['alias' => $section->alias]), 'class' => 'form--action' ]) }}
 					<div class="card">
 						<div class="card-header">
-							Курсы по состоянию на: {{ $records->relevant }}
+							Курсы по состоянию на: {{ head($records)['relevant'] }}
 						</div>
 						<div class="card-body">
 							<table class="table table-bordered table-striped">
 								<tbody>
-									@php $records = $records->rates ?? [] ; ksort($records); @endphp
-
-									@forelse ($records as $code => $record)
-										@if ($code)
-											<tr>
-												<td style="width: 30px;">
-													{{ Form::checkbox('rates[]', $code, false, ['class' => 'checkbox--course']) }}
-												</td>
-												<td>{{ $record['unit'] }} {{ $record['title_' . LaravelLocalization::getCurrentLocale()] }}</td>
-												<td>{{ $code . ' / KZT' }}</td>
-												<td>{{ $record['amount'] }}</td>
-												<td class="text-center" style="width: 50px;">
-													@if ($previous)
-														@if ($record['amount'] != $previous['rates'][$code]['amount'])
-															@if ($record['amount'] > $previous['rates'][$code]['amount'])
-																<i class="fa fa-arrow-up text-danger"></i>
-															@else
-																<i class="fa fa-arrow-down text-success"></i>
-															@endif
+									@forelse ($records as $record)
+										<tr>
+											<td style="width: 30px;">
+												{{ Form::checkbox('rates[]', $record['rate_id'], false, ['class' => 'checkbox--course']) }}
+											</td>
+											<td>{{ $record['unit'] }} {{ $record['title_' . LaravelLocalization::getCurrentLocale()] }}</td>
+											<td>{{ $record['code'] . ' / KZT' }}</td>
+											<td>{{ $record['amount'] }}</td>
+											<td class="text-center" style="width: 50px;">
+													@if (!is_null($record['up']))
+														@if ($record['up'] == 1)
+															<i class="fa fa-arrow-up text-danger"></i>
+														@else
+															<i class="fa fa-arrow-down text-success"></i>
 														@endif
 													@endif
-												</td>
-											</tr>
-										@endif
+											</td>
+										</tr>
 									@empty
 										<tr>
 											<td colspan="6">Данные по курсам не загружены</td>

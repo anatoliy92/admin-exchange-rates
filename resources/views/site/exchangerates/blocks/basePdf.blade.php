@@ -3,11 +3,12 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<title>Nationalbank</title>
 	<style type="text/css">
-			@page { margin: 20px; }
+			@page { margin: 20px; padding-bottom: 70px; }
 			body {
 				position: relative;
 				font-family: 'DejaVu Sans', Times, serif;
 				/* border: 1px solid; */
+				padding-top: 40px
 			}
 			p {
 					margin-bottom: 0.25cm;
@@ -58,17 +59,15 @@
 			}
 			table td {
 				border: 1px solid #CCCCCC;
-				font-size: 14px;
+				font-size: 12px;
 				text-align: center;
 				padding: 10px;
 			}
 
-			table thead td {
+			table thead th {
 				border: 1px solid #CCCCCC;
 				padding: 10px;
-			}
-
-			table thead {
+				font-size: 12px;
 				font-weight: 700;
 				background: #F4F4F4;
 				text-align:center;

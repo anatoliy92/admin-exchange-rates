@@ -17,19 +17,12 @@ class CreateExchangeRatesTable extends Migration
 				Schema::create('exchange-rates', function (Blueprint $table) {
 						$table->bigIncrements('id');
 						$table->integer('section_id');
-						$table->boolean('good')->default(false);
+						$table->string('code', 30)->comment('Код валюты');
+						$table->boolean('home')->default(false)->comment('Показать на главной');
 
-						$table->jsonb('rates');
+						$langs = Langs::all();
+						foreach ($langs as $lang) { $table->string('title_' . $lang->key)->nullable(); }
 
-						// $langs = Langs::all();
-						// foreach ($langs as $lang) { $table->string('title_' . $lang->key)->nullable(); }
-						// $table->string('code')->comment('Код валюты');
-						// $table->string('unit')->nullable();
-						// $table->double('amount', 8, 2);
-						// $table->boolean('direction')->default(true)->comment('true - to top, false - to bottom');
-						// $table->string('course')->default('KZT')->comment('В какую валюту - Тенге, KZT');
-
-						$table->date('relevant')->comment('Дата актуальности:');
 						$table->timestamps();
 				});
 		}

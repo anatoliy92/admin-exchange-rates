@@ -1,25 +1,40 @@
 <?php namespace Avl\ExchangeRates\Controllers\Site;
 
 use App\Http\Controllers\Site\Sections\SectionsController;
+	use Avl\ExchangeRates\Models\ExchangeRatesData;
 	use Avl\ExchangeRates\Models\ExchangeRates;
+	use Avl\ExchangeRates\Traits\RatesTrait;
 	use Illuminate\Http\Request;
-	use App\Models\Sections;
+	use Dompdf\Css\Stylesheet;
+	use Dompdf\Options;
+	use Dompdf\Dompdf;
 	use Carbon\Carbon;
 	use View;
-	use Dompdf\Css\Stylesheet;
-	use Dompdf\Dompdf;
-	use Dompdf\Options;
 
 class ReportRatesController extends SectionsController
 {
+	use RatesTrait;
+
+	protected $rates = null;
+
+	public function __construct (Request $request)
+	{
+		parent::__construct($request);
+
+		$this->rates = ExchangeRatesData::whereIn('rate_id', $request->input('rates'))
+															->good()
+															->whereBetween('relevant', [$request->input('beginDate'), $request->input('endDate')])
+															->with(['rate'])
+															->orderBy('rate_id')
+															->orderBy('relevant', 'DESC')
+															->get();
+	}
 
 	public function report (Request $request)
 	{
 		if ($request->input('rates')) {
-			$rates = ExchangeRates::good()->whereBetween('relevant', [$request->input('beginDate'), $request->input('endDate')])->get();
-
 			return view('exchangerates::site.exchangerates.report', [
-				'rates' => $rates
+				'records' => $this->prepare($request->input(), $this->rates)
 			]);
 		}
 
@@ -28,12 +43,11 @@ class ReportRatesController extends SectionsController
 
 	public function pdf (Request $request)
 	{
-		$rates = ExchangeRates::good()->whereBetween('relevant', [$request->input('beginDate'), $request->input('endDate')])->get();
 		$domPdf = new Dompdf();
 
 		$domPdf->loadHtml(view('exchangerates::site.exchangerates.blocks.basePdf', [
 			'template' => 'exchangerates::site.exchangerates.blocks.report',
-			'rates' => $rates,
+			'records' => $this->prepare($request->input(), $this->rates),
 			'request' => $request->input()
 		])->render());
 

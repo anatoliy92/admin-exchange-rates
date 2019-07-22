@@ -3,7 +3,7 @@
 @section('main')
 	<div class="card">
 		<div class="card-header">
-			<i class="fa fa-align-justify"></i> Просмотр курсов по состоянию на: <b>{{ $records->relevant }}</b>
+			<i class="fa fa-align-justify"></i> Просмотр курсов по состоянию на: <b>{{ $relevant }}</b>
 			<div class="card-actions">
 				<a href="{{ route('adminexchangerates::sections.exchangerates.index', [ 'id' => $section->id ]) }}" class="btn btn-default pl-3 pr-3" style="width: 70px;" title="Назад"><i class="fa fa-arrow-left"></i></a>
 			</div>
@@ -27,8 +27,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								@forelse ($records->rates as $record)
-									@if ($record['code'])
+								@forelse ($records as $record)
 										<tr>
 											<td class="text-center">{{ $record['code'] }}</td>
 											<td class="text-center">{{ $record['unit'] }}</td>
@@ -41,12 +40,11 @@
 												<div class="input-group">
 													{{ Form::text(null, $record['amount'], ['class' => 'form-control bg-light', 'readonly']) }}
 													<div class="input-group-append">
-														<span class="input-group-text">{{ ($record['course'] === 'ТЕНГЕ') ? 'KZT' : $record['course'] }}</span>
+														<span class="input-group-text">{{ $record['course'] }}</span>
 													</div>
 												</div>
 											</td>
 										</tr>
-									@endif
 								@empty
 									<tr>
 										<td colspan="6">Данные по курсам не загружены</td>
@@ -56,11 +54,10 @@
 						</table>
 				</div>
 			</div>
-
 		</div>
 
 		<div class="card-footer position-relative">
-			<i class="fa fa-align-justify"></i> Добавление курсов
+			<i class="fa fa-align-justify"></i> Просмотр курсов по состоянию на: <b>{{ $relevant }}</b>
 			<div class="card-actions">
 				<a href="{{ route('adminexchangerates::sections.exchangerates.index', [ 'id' => $section->id ]) }}" class="btn btn-default pl-3 pr-3" style="width: 70px;" title="Назад"><i class="fa fa-arrow-left"></i></a>
 			</div>

@@ -11,7 +11,7 @@
 @section('main')
 	<div class="card">
 		<div class="card-header">
-			<i class="fa fa-align-justify"></i> Редактирование курсов по состоянию на: <b>{{ $records->relevant }}</b>
+			<i class="fa fa-align-justify"></i> Редактирование курсов по состоянию на: <b>{{ $relevant }}</b>
 			<div class="card-actions">
 				<a href="{{ route('adminexchangerates::sections.exchangerates.index', [ 'id' => $section->id ]) }}" class="btn btn-default pl-3 pr-3" style="width: 70px;" title="Назад"><i class="fa fa-arrow-left"></i></a>
 				<button type="submit" form="submit" name="button" class="btn btn-success pl-3 pr-3" style="width: 70px;" title="Сохранить"><i class="fa fa-floppy-o"></i></button>
@@ -22,7 +22,7 @@
 
 			<div class="card">
 				<div class="card-body p-2">
-					{{ Form::open(['url' => route('adminexchangerates::sections.exchangerates.update', ['id' => $section->id, 'exchangerate' => $records->id]), 'class' => 'needs-validation', 'novalidate', 'id' => 'submit' ]) }}
+					{{ Form::open(['url' => route('adminexchangerates::sections.exchangerates.update', ['id' => $section->id, 'exchangerate' => $relevant]), 'class' => 'needs-validation', 'novalidate', 'id' => 'submit' ]) }}
 						@method('PUT')
 
 						<table class="table table-bordered">
@@ -39,27 +39,25 @@
 								</tr>
 							</thead>
 							<tbody>
-								@php $records = session('records')['rates'] ?? $records->rates; ksort($records); @endphp
-
-								@forelse ($records as $code => $record)
+								@forelse ($records as $id => $record)
 										<tr>
 											<td class="text-center">
-												{{ $code }}
+												{{ $record['code'] }}
 											</td>
 											<td class="text-center">
 												{{ $record['unit'] }}
-												{{ Form::hidden('rates[' . $code . '][unit]', $record['unit']) }}
+												{{ Form::hidden('rates[' . $id . '][unit]', $record['unit']) }}
 											</td>
 											@if ($langs)
 												@foreach ($langs as $lang)
-													<td>{{ Form::text('rates[' . $code . '][title_' . $lang->key . ']', $record['title_' . $lang->key], ['class' => 'form-control']) }}</td>
+													<td>{{ Form::text('rates[' . $id . '][title_' . $lang->key . ']', $record['title_' . $lang->key], ['class' => 'form-control']) }}</td>
 												@endforeach
 											@endif
 											<td>
 												<div class="input-group">
-													{{ Form::text('rates[' . $code . '][amount]', $record['amount'], ['class' => 'form-control']) }}
+													{{ Form::text('rates[' . $id . '][amount]', $record['amount'], ['class' => 'form-control']) }}
 													<div class="input-group-append">
-														{{ Form::hidden('rates[' . $code . '][course]', $record['course']) }}
+														{{ Form::hidden('rates[' . $id . '][course]', $record['course']) }}
 														<span class="input-group-text">{{ ($record['course'] === 'ТЕНГЕ') ? 'KZT' : $record['course'] }}</span>
 													</div>
 												</div>

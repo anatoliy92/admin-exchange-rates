@@ -1,24 +1,33 @@
 <table class="table table-bordered table-striped" style="border-spacing: 0;">
-	<thead>
-		<tr>
-			<th></th>
-			@foreach (request()->input('rates') as $code)
-				<th class="text-center align-middle">Числовое значение</th>
-				<th class="text-center align-middle">{{ $code }}</th>
-				<th width="8"></th>
-			@endforeach
-		</tr>
-	</thead>
-	<tbody>
-		@foreach ($rates as $index => $rate)
+	@if ($records)
+		<thead>
 			<tr>
-				<td style="width: 100px;">{{ $rate->relevant }}</td>
-				@foreach (request()->input('rates') as $code)
-					@isset($rate->rates[$code]) <td class="text-center">{{ $rate->rates[$code]['unit'] }}</td> @else <td></td> @endisset
-					@isset($rate->rates[$code]) <td class="text-center">{{ $rate->rates[$code]['amount'] }}</td> @else <td></td> @endisset
-					@isset($rate->rates[$code]) <td></td> @else <td></td> @endisset
+				<th></th>
+				@foreach ($records['titles'] as $id => $title)
+					<th class="text-center align-middle">Числовое значение</th>
+					<th class="text-center align-middle">{{ $title['title'] }}</th>
+					<th width="8"></th>
 				@endforeach
 			</tr>
-		@endforeach
+		</thead>
+	@endif
+
+	<tbody>
+		@if (isset($records['records']))
+			@foreach ($records['records'] as $relevant => $record)
+				<tr>
+					<td style="width: 100px;">{{ $record['relevant'] }}</td>
+					@foreach ($record['rates'] as $rate)
+						<td class="text-center">{{ $rate['unit'] }}</td>
+						<td class="text-center">{{ $rate['amount'] }}</td>
+						<td></td>
+					@endforeach
+				</tr>
+			@endforeach
+		@else
+			<tr>
+				<td colspan="{{ count($records['titles']) * 3 + 1 }}">Курсы не загружены</td>
+			</tr>
+		@endif
 	</tbody>
 </table>

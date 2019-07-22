@@ -1,19 +1,17 @@
 <?php namespace Avl\ExchangeRates\Controllers\Site;
 
 use App\Http\Controllers\Site\Sections\SectionsController;
-	use Avl\ExchangeRates\Models\ExchangeRates;
-
+	use Avl\ExchangeRates\Models\ExchangeRatesData;
 	use PhpOffice\PhpSpreadsheet\Helper\Sample;
 	use PhpOffice\PhpSpreadsheet\IOFactory;
 	use PhpOffice\PhpSpreadsheet\Spreadsheet;
-
+	use Avl\ExchangeRates\Traits\RatesTrait;
 	use Illuminate\Http\Request;
-	use App\Models\Sections;
-	use Carbon\Carbon;
 	use View;
 
 class ExcelRatesController extends SectionsController
 {
+	use RatesTrait;
 
 	protected $spreadsheet;
 
@@ -36,41 +34,51 @@ class ExcelRatesController extends SectionsController
 
 	public function excel (Request $request)
 	{
-
 		$spreadsheet = $this->spreadsheet->getActiveSheet()->setTitle('Courses');
 
-		$rates = ExchangeRates::good()->whereBetween('relevant', [$request->input('beginDate'), $request->input('endDate')])->get();
+		$rates = ExchangeRatesData::whereIn('rate_id', $request->input('rates'))
+															->good()
+															->whereBetween('relevant', [$request->input('beginDate'), $request->input('endDate')])
+															->with(['rate'])
+															->orderBy('rate_id')
+															->orderBy('relevant', 'DESC')
+															->get();
+
+		$records = $this->prepare($request->input(), $rates);
 
 		$spreadsheet->setCellValue('A1', 'Date');
 		$spreadsheet->getColumnDimension('A')->setWidth(13);
 
 		$letter = 'B';
-		foreach ($request->input('rates') as $code) {
-			$spreadsheet->setCellValue($letter . '1', $code . '_quant');
+		foreach ($records['titles'] as $title) {
+			$spreadsheet->setCellValue($letter . '1', $title['code'] . '_quant');
 			$spreadsheet->getColumnDimension($letter)->setWidth(13);
 
 			++$letter;
-			$spreadsheet->setCellValue($letter. '1', $code);
+			$spreadsheet->setCellValue($letter. '1', $title['code']);
 			$spreadsheet->getColumnDimension($letter)->setWidth(13);
 
 			$letter++;
 		}
 
-		$i = 2;
-		foreach ($rates as $index => $rate) {
-			$spreadsheet->setCellValue('A' . $i, $rate->relevant);
+		if (isset($records['records'])) {
+			$i = 2;
+			foreach ($records['records'] as $relevant => $record) {
+				$spreadsheet->setCellValue('A' . $i, $relevant);
 
-			$letter = 'B';
-			foreach ($request->input('rates') as $code) {
+				$letter = 'B';
+				foreach ($record['rates'] as $rate) {
 
-				$spreadsheet->setCellValue($letter . $i, $rate->rates[$code]['unit'] ?? '');
-				$spreadsheet->setCellValue(++$letter. $i, $rate->rates[$code]['amount'] ?? '');
+					$spreadsheet->setCellValue($letter . $i, $rate['unit'] ?? '');
+					$spreadsheet->setCellValue(++$letter. $i, $rate['amount'] ?? '');
 
-				$letter++;
+					$letter++;
+				}
+
+				$i++;
 			}
-
-			$i++;
 		}
+
 
 		$this->close();
 	}

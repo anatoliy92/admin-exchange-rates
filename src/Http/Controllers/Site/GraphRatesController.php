@@ -1,6 +1,7 @@
 <?php namespace Avl\ExchangeRates\Controllers\Site;
 
 use App\Http\Controllers\Site\Sections\SectionsController;
+	use Avl\ExchangeRates\Models\ExchangeRatesData;
 	use Avl\ExchangeRates\Models\ExchangeRates;
 	use Illuminate\Http\Request;
 	use App\Models\Sections;
@@ -13,15 +14,14 @@ class GraphRatesController extends SectionsController
 	public function graph (Request $request)
 	{
 		if ($request->input('rates')) {
-			$rates = ExchangeRates::good()->whereBetween('relevant', [$request->input('beginDate'), $request->input('endDate')])->orderBy('relevant', 'ASC')->get();
+
+			$rates = ExchangeRatesData::WhereIn('rate_id', $request->input('rates'))->good()->whereBetween('relevant', [$request->input('beginDate'), $request->input('endDate')])->orderBy('relevant', 'ASC')->get();
 
 			share([
 				'rates' => $this->prepare($rates, $request->input()),
 			]);
 
-			return view('exchangerates::site.exchangerates.graph', [
-				'rates' => $rates
-			]);
+			return view('exchangerates::site.exchangerates.graph');
 		}
 
 		return redirect()->back();
@@ -29,35 +29,32 @@ class GraphRatesController extends SectionsController
 
 	public function prepare ($rates, $input)
 	{
-		$ratesCollect = collect($rates->toArray());
-
 		$records = [];
 
-		foreach ($ratesCollect as $collect) {
-			$rateCollect = \collect($collect['rates']);
-			foreach ($input['rates'] as $code) {
-				if ($rateCollect->has($code)) {
-					$records[$code]['title'] = $rateCollect->get($code)['title_ru'];
-					$records[$code]['datasets'][$collect['relevant']] = $rateCollect->get($code)['amount'];
-					$records[$code]['datasets'] = \array_values($records[$code]['datasets']);
-				}
-			}
+		foreach ($rates as $rate) {
+			$records[$rate->rate->code]['title'] = $rate->rate->title_ru;
+			$records[$rate->rate->code]['code'] = $rate->rate->code;
+			$records[$rate->rate->code]['datasets'][] = $rate->amount;
 		}
 
 		$relevants = [];
-		foreach ($ratesCollect as $index => $rate) {
-			$relevants[] = $rate['relevant'];
+		$rates = $rates->groupBy('relevant')->toArray();
+		foreach ($rates as $relevant => $rate) {
+			$relevants[] = $relevant;
 		}
 
 		$dataset = [];
 		foreach ($records as $code => $record) {
 			$colorLine = randomHex();
 			$dataset[] = [
-				'label' => $record['title'],
+				'label' => $record['code'],
+				'pointBackgroundColor' => $colorLine,
+				'pointRadius' => 5,
+				'pointStrokeColor' => $colorLine,
 				'backgroundColor' => $colorLine,
 				'borderColor' => $colorLine,
 				'data' => $record['datasets'],
-				'fill' => false,
+				'fill' => true,
 			];
 		}
 

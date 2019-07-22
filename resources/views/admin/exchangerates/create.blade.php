@@ -26,7 +26,7 @@
 				<div class="card-body p-2">
 					{{ Form::open(['url' => route('adminexchangerates::sections.exchangerates.upload', ['id' => $section->id, 'date' => request()->input('date')]), 'class' => 'needs-validation', 'novalidate', 'files' => true ]) }}
 						<div class="row">
-							{{ Form::hidden('relevant', request()->input('date')) }}
+							{{ Form::hidden('relevant', request()->input('date'), ['id' => 'relevant']) }}
 
 							<div class="col-12 col-sm-2">
 								{{ Form::file('docfile', ['class' => 'form-control']) }}

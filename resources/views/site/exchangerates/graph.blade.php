@@ -22,7 +22,7 @@
 
 		<div class="row">
 			<div class="col-12">
-				<canvas id="canvas"></canvas>
+				<canvas id="chart" style="background-color: rgb(51, 51, 51);" width="1000" height="500" class="chartjs-render-monitor"></canvas>
 			</div>
 		</div>
 	</div>

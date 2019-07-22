@@ -33,7 +33,7 @@
 							<thead>
 								<tr>
 									<th width="50" class="text-center">#</th>
-									<th width="50" class="text-center"></th>
+									{{-- <th width="50" class="text-center"></th> --}}
 									<th>Актуально</th>
 									<th class="text-center" style="width: 160px">Дата публикации</th>
 									<th class="text-center" style="width: 100px;">Действие</th>
@@ -43,17 +43,12 @@
 								@foreach ($rates as $rate)
 									<tr>
 										<td class="text-center">{{ ++$iteration }}</td>
-										<td class="text-center">
-											<a class="change--status" href="#" data-id="{{ $rate->id }}" data-model="Avl\ExchangeRates\Models\ExchangeRates">
-												<i class="fa @if ($rate->good){{ 'fa-eye' }}@else{{ 'fa-eye-slash' }}@endif"></i>
-											</a>
-										</td>
 										<td>{{ $rate->relevant }}</td>
 										<td>{{ $rate->created_at }}</td>
 										<td class="text-right">
 											<div class="btn-group" role="group">
-												@can('view', $section) <a href="{{ route('adminexchangerates::sections.exchangerates.show', ['id' => $section->id, 'exchangerate' => $rate->id]) }}" class="btn btn btn-outline-primary" title="Просмотр"><i class="fa fa-eye"></i></a> @endcan
-												@can('update', $section) <a href="{{ route('adminexchangerates::sections.exchangerates.edit', ['id' => $section->id, 'exchangerate' => $rate->id]) }}" class="btn btn btn-outline-success" title="Изменить"><i class="fa fa-edit"></i></a> @endcan
+												@can('view', $section) <a href="{{ route('adminexchangerates::sections.exchangerates.show', ['id' => $section->id, 'exchangerate' => $rate->relevant]) }}" class="btn btn btn-outline-primary" title="Просмотр"><i class="fa fa-eye"></i></a> @endcan
+												@can('update', $section) <a href="{{ route('adminexchangerates::sections.exchangerates.edit', ['id' => $section->id, 'exchangerate' => $rate->relevant]) }}" class="btn btn btn-outline-success" title="Изменить"><i class="fa fa-edit"></i></a> @endcan
 												@can('delete', $section) <a href="#" class="btn btn btn-outline-danger remove--record" title="Удалить"><i class="fa fa-trash"></i></a> @endcan
 											</div>
 											@can('delete', $section)

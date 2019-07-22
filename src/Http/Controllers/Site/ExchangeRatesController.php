@@ -1,7 +1,9 @@
 <?php namespace Avl\ExchangeRates\Controllers\Site;
 
 use App\Http\Controllers\Site\Sections\SectionsController;
+	use Avl\ExchangeRates\Models\ExchangeRatesData;
 	use Avl\ExchangeRates\Models\ExchangeRates;
+	use Avl\ExchangeRates\Traits\RatesTrait;
 	use Illuminate\Http\Request;
 	use App\Models\Sections;
 	use Carbon\Carbon;
@@ -10,6 +12,7 @@ use App\Http\Controllers\Site\Sections\SectionsController;
 
 class ExchangeRatesController extends SectionsController
 {
+	use RatesTrait;
 
 	public function index (Request $request)
 	{
@@ -17,12 +20,9 @@ class ExchangeRatesController extends SectionsController
 
 		$template = (View::exists($template)) ? $template : 'exchangerates::site.exchangerates.index';
 
-		$records = $this->section->rates()->good()->whereDate('relevant', '<=', Carbon::now())->orderBy('relevant', 'DESC')->limit(2)->get();
-
 		return view($template, [
-				'records' => $records->first(),
-				'previous' => $records->last() ?? [],
-				'request' => $request
+			'records' => $this->getRates(),
+			'request' => $request
 		]);
 	}
 }
